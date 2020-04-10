@@ -1,0 +1,64 @@
+unbind C-b
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+set -g prefix C-@
+# 将copy mode的快捷键换成vi模式
+setw -g mode-keys vi
+# 设置按键响应超时，默认1妙
+set-option -g escape-time 0
+set -g default-terminal "tmux-256color"
+# Enable mouse mode
+setw -g mouse on
+set -g mouse on
+# Mouse based copy
+bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+bind-key -T copy-mode MouseDragEnd1Pane send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+# forecolor & backgroundcolor
+set -g status-bg black
+set -g status-fg yellow
+#set -g status-left-length 1000
+set -g status-right-length 50
+# 状态栏窗口名称之间的间隔
+set -wg window-status-separator " / "
+set -wg window-status-current-style "bg=#692124"
+set -g status-right "#[fg=green]#(uptime.pl)#[default] #[fg=blue]#(date +'%Y/%m/%d %H:%M:%S %a %Z')#[default] • #[fg=green]#(cut -d ' ' -f 1-3 /proc/loadavg)#[default]"
+set -g message-style "bg=#ffc78f, fg=#ff0000"
+# 使用xclip接入系统粘贴板
+bind C-c run " tmux save-buffer - | xclip -i -sel clipboard"
+bind C-v run " tmux set-buffer \"$(xclip -o -sel clipboard)\"; tmux paste-buffer"
+# 设置面板起始序号
+set -g base-index 1
+set -g pane-base-index 1
+# 非当前窗口有内容更新在状态栏通知
+setw -g monitor-activity on
+
+# Tmux Resurrect
+# mkdir -p ~/.tmux/plugins && cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tmux-resurrect.git
+# vim-obsession
+#run-shell ~/.tmux/plugins/tmux-resurrect/resurrect.tmux
+
+
+# Tpm
+# cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
+# prefix+I: install & reflash
+# prefix+U: select & install
+# prefix+alt+u: uninstsall
+# 默认需要引入的插件
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+# 新插件
+# set -g @plugin 'github_username/plugin_name'
+# set -g @plugin 'git@github.com/user/plugin'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-open' #安装tmux-open
+# resurrect
+set -g @resurrect-capture-pane-contents 'on' #恢复面板内容
+set -g @resurrect-strategy-vim 'session' #恢复vim会话状态
+set -g @resurrect-save-shell-history 'on'
+set -g @resurrect-dir '~/.cache/resurrect/'
+set -g @resurrect-strategy-vim 'session'
+set -g @resurrect-strategy-nvim 'session'
+# tmux-open
+set -g @open 'x'
+set -g @open-editor 'C-x'
+# 初始化tmux插件管理器
+run '~/.tmux/plugins/tpm/tpm'
