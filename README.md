@@ -1,4 +1,3 @@
 # manjaro-configuration-installer
 ## Install
-`git clone https://github.com/ZetZhang/vim-congiration-installer.git && cd vim-congiration-installer && ./install.sh`
-``
+`git clone https://github.com/ZetZhang/manjaro-configuration-installer.git && cd manjaro-configuration-installer && ./install.sh`
