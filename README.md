@@ -1,0 +1,1 @@
+# manjaro-configuration-installer
