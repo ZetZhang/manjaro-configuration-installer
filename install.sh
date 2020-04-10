@@ -6,29 +6,29 @@ export USER=`whoami`
 if [ ! -d ~/.hci ]; then
     echo -e "configure manjaro?(y|yes)"
     read -t 7 -u 0 choice
-    if [[ "{y, yes}" =~ $choice ]]; then mkdir -p ~/.hci && touch ~/.hci/.{c1,c2,c3,c4} && echo "mkdir"
+    if [[ "{y, yes}" =~ $choice ]]; then mkdir -p ~/.hci && touch ~/.hci/.c1 || exit 127
     else exit 0
     fi
 fi
 jmpback=`pwd`
 
 # source server init
-declare exi=`grep '[archlinuxcn]' /etc/pacman.con | wc -l`
-if [ exi == 0 ]; then
+declare exi=`grep '\[archlinuxcn\]' /etc/pacman.conf | wc -l`
+if test $exi -eq 0; then
     #trap "wait..." SIGINT
     cd $jmpback
-    sudo pacman-mirrors --fasttrack
-    sudo echo "[archlinuxcn]
-    SigLevel = Optional TrustedOnly
-    Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch" >> sudo /etc/pacman.conf
+    #sudo pacman-mirrors --fasttrack
+    su - -c "echo -E \"[archlinuxcn]
+SigLevel = Optional TrustedOnly
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch\" >> /etc/pacman.conf"
     sudo sed -i "s/^# \(Color\)/\1/" /etc/pacman.conf
-    sudo pacman -Syy
+    sudo pacman -Syy && sudo pacman -S archlinuxcn-keyring
     #trap -- SIGINT
 fi
 
 # install
-ma='sudo pacman -S --confirm --needed'
-ya='sudo pacman -S --confirm --needed'
+ma='sudo pacman -S --noconfirm --needed'
+ya='sudo pacman -S --noconfirm --needed'
 $ma base-devel yay
 $ya -Syu
 $ma curl
@@ -44,9 +44,10 @@ if [ -f ~/.hci/.c1 ]; then
     mkdir -p ~/.tmux/plugins
     cp ./tmux_conf ~/.tmux.conf
     cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
-    rm -rf ~/.hci/h1
     #trap -- SIGINT
+    mv ~/.hci/.c1 ~/.hci/.c2
 fi
+#[ $? -eq 0 ] && rm -rf ~/.hci/.c1 || exit 127
 tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 # you should enter session and execute command: `prefix r` & `prefix I`
 # tmux Resurrect
@@ -54,34 +55,9 @@ tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 #cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tmux-resurrect.git
 #tmux run-shell ~/.tmux/plugins/tmux-resurrect/resurrect.tmux
 
-# install zsh && ohmyzsh
-if [ -f ~/.hci/.c2 ]; then
-    cd $jmpback
-    $ma zsh
-    chsh -s /bin/zsh
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    $ma fzf
-    $ma autojump
-    $ma the_silver_searcher
-    rm -rf ~/.hci/.h2
-fi
-
-# zsh-autosuggestions
-if [ -f ~/.hci/.c3 ]; then
-    cd $jmpback
-    git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-    rm -rf ~/.hci/.h3
-fi
-
-# zsh-syntax-highlighting
-if [ -f ~/.hci/.c4 ]; then
-    cd $jmpback
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-    rm -rf ~/.hci/.h4
-fi 
-
+$ma zsh
 #trap "wait.." SIGINT
-if [ -f ~/.hci/.c5 ]; then
+if [ -f ~/.hci/.c2 ]; then
     sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n)" ~/.zshrc
     sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
     sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
@@ -97,14 +73,35 @@ if [ -f ~/.hci/.c5 ]; then
             echo -E "# fzf
             export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
 
-    source ~/.zshrc
-    rm -rf ~/.hci/.c5
+    #source ~/.zshrc
+    mv ~/.hci/.c2 ~/.hci/.c3
 fi
 #trap SIGINT
 
+# install zsh && ohmyzsh
+if [ -f ~/.hci/.c3 ]; then
+    cd $jmpback
+    #sudo chsh -s /bin/zsh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    $ma fzf
+    $ma autojump
+    $ma the_silver_searcher
+    mv ~/.hci/.c3 ~/.hci/.c4
+fi
+#[ $? -eq 0 ] && rm -rf ~/.hci/.c2 || exit 127
+
+# zsh-autosuggestions
+[ -f ~/.hci/.c4 ] && git clone
+https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && mv ~/.hci/.c4 ~/.hci/.c5
+#[ $? -eq 0 ] && rm -rf ~/.hci/.c3 || exit 127
+
+# zsh-syntax-highlighting
+[ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && rm -rf ~/.c5
+#[ $? -eq 0 ] && rm -rf ~/.hci/.c4 || exit 127
+
 $ma rust
 cd ~/.ephemeral_folder
-git clone https://github.com/ZetZhang/vim-congiration-installer.git && cd vim-congiration-installer && ./install.sh
+git clone https://github.com/ZetZhang/vim-congiration-installer.git && source ./vim-congiration-installer/install.sh
 
 $ma jdk8-openjdk
 $ma jdk10-openjdk
