@@ -10,20 +10,20 @@ if [ ! -d ~/.hci ]; then
     else exit 0
     fi
 fi
-mkdir ~/ephemeral_folder
+jmpback=`pwd`
 
 # source server init
 declare exi=`grep '[archlinuxcn]' /etc/pacman.con | wc -l`
 if [ exi == 0 ]; then
-    trap "wait..." SIGINT
-    cd ~/.ephemeral_folder
+    #trap "wait..." SIGINT
+    cd $jmpback
     sudo pacman-mirrors --fasttrack
     sudo echo "[archlinuxcn]
     SigLevel = Optional TrustedOnly
     Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch" >> sudo /etc/pacman.conf
     sudo sed -i "s/^# \(Color\)/\1/" /etc/pacman.conf
     sudo pacman -Syy
-    trap -- SIGINT
+    #trap -- SIGINT
 fi
 
 # install
@@ -38,13 +38,14 @@ $ma google-chrome
 # install tmux
 $ma tmux
 $ma xclip
-if [ -f ~/.hci/.h1 ]; then
-    trap "wait..." SIGINT
+if [ -f ~/.hci/.c1 ]; then
+    #trap "wait..." SIGINT
     # Tpm
-    mkdir -p ~/.tmux/plugins && cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
+    mkdir -p ~/.tmux/plugins
     cp ./tmux_conf ~/.tmux.conf
+    cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
     rm -rf ~/.hci/h1
-    trap -- SIGINT
+    #trap -- SIGINT
 fi
 tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 # you should enter session and execute command: `prefix r` & `prefix I`
@@ -54,8 +55,8 @@ tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 #tmux run-shell ~/.tmux/plugins/tmux-resurrect/resurrect.tmux
 
 # install zsh && ohmyzsh
-if [ -f ~/.hci/.h2 ]; then
-    cd ~/.ephemeral_folder
+if [ -f ~/.hci/.c2 ]; then
+    cd $jmpback
     $ma zsh
     chsh -s /bin/zsh
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -66,22 +67,21 @@ if [ -f ~/.hci/.h2 ]; then
 fi
 
 # zsh-autosuggestions
-if [ -f ~/.hci/.h3 ]; then
-    cd ~/.ephemeral_folder
+if [ -f ~/.hci/.c3 ]; then
+    cd $jmpback
     git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
     rm -rf ~/.hci/.h3
 fi
 
 # zsh-syntax-highlighting
-if [ -f ~/.hci/.h4 ]; then
-    cd ~/.ephemeral_folder
+if [ -f ~/.hci/.c4 ]; then
+    cd $jmpback
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
     rm -rf ~/.hci/.h4
 fi 
 
-trap "wait.." SIGINT
-{
-    flock -w 10 123
+#trap "wait.." SIGINT
+if [ -f ~/.hci/.c5 ]; then
     sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n)" ~/.zshrc
     sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
     sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
@@ -97,9 +97,10 @@ trap "wait.." SIGINT
             echo -E "# fzf
             export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
 
-            source ~/.zshrc
-} 123<>.lock
-trap SIGINT
+    source ~/.zshrc
+    rm -rf ~/.hci/.c5
+fi
+#trap SIGINT
 
 $ma rust
 cd ~/.ephemeral_folder
