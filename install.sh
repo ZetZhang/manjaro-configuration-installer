@@ -6,16 +6,17 @@ export USER=`whoami`
 if [ ! -d ~/.hci ]; then
     echo -e "configure manjaro?(y|yes)"
     read -t 7 -u 0 choice
-    if [[ "{y, yes}" =~ $choice ]]; then mkdir -p ~/.hci && touch ~/.hci/.c1
-    else exit 0; fi
+    if [[ "{y, yes}" =~ $choice ]]; then mkdir -p ~/.hci && touch ~/.hci/.c1; fi
     
     echo -e "simple installtion(s|simple) or full installtion(f|full)"
     read -t 7 -u 0 way
     if [[ "{s, simple}" =~ $way ]]; then touch ~/.hci/.simple
     elif [[ "{f, full}" =~ $way ]]; then touch ~/.hci/.full
-    else exit 0; fi
+    fi
 fi
 jmpback=`pwd`
+
+if test -d ~/.hci ; then
 
 # source server init
 declare exi=`grep '\[archlinuxcn\]' /etc/pacman.conf | wc -l`
@@ -87,10 +88,6 @@ fi
 # zsh-syntax-highlighting
 [ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && rm -rf ~//.hci/.c5
 
-$ma rust
-cd $jmpback
-git clone https://github.com/ZetZhang/vim-congiration-installer.git && source ./vim-congiration-installer/install.sh
-
 # simple
 if test -f ~/.hci/.simple ; then
 $ma {\
@@ -103,6 +100,7 @@ sudo archlinux-java set java-8-openjdk
 $ma {\
 bar,\
 gdb,\
+rust,\
 crash,\
 strace,\
 zeromq,\
@@ -146,3 +144,9 @@ xmind}
 fi
 
 [ $? -eq 0 ] && rm -rf ~/.hci
+fi
+
+$ma rust
+cd $jmpback
+git clone https://github.com/ZetZhang/vim-congiration-installer.git 
+cd ./vim-congiration-installer && ./install.sh
