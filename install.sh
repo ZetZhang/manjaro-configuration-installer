@@ -88,7 +88,7 @@ fi
 [ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && rm -rf ~//.hci/.c5
 
 $ma rust
-cd ~/.ephemeral_folder
+cd $jmpback
 git clone https://github.com/ZetZhang/vim-congiration-installer.git && source ./vim-congiration-installer/install.sh
 
 # simple
