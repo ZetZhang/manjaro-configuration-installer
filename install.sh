@@ -77,7 +77,7 @@ if [ -f ~/.hci/.c3 ]; then
             #cat {}) 2> /dev/null | head -500'" >> ~/.zshrc
             echo -E "# fzf
             export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
-    echo "eval $(thefuck --alias)" >> ~/.zshrc
+    echo -E "eval $(thefuck --alias)" >> ~/.zshrc
     source ~/.zshrc
     #sudo chsh -s /bin/zsh
     mv ~/.hci/.c3 ~/.hci/.c4
