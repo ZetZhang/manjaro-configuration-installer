@@ -93,55 +93,56 @@ git clone https://github.com/ZetZhang/vim-congiration-installer.git && source ./
 
 # simple
 if test -f ~/.hci/.simple ; then
-    $ma {\
-        jdk8-openjdk,\
-        jdk10-openjdk,\
-        jdk13-openjdk}
-    archlinux-java status
-    archlinux-java set java-8-jdk
+$ma {\
+jdk8-openjdk,\
+jdk10-openjdk,\
+jdk13-openjdk}
+archlinux-java status
+sudo archlinux-java set java-8-openjdk
 
-    $ma {\
-        bar,\
-        gdb,\
-        crash,\
-        strace,\
-        zeromq,\
-        thefuck,\
-        you-get,\
-        cppcheck,\
-        systemtap,\
-        cppman-git,\ # cppman -c
-        kcachegrind}
+$ma {\
+bar,\
+gdb,\
+crash,\
+strace,\
+zeromq,\
+thefuck,\
+you-get,\
+cppcheck,\
+systemtap,\
+cppman-git,\
+kcachegrind}
 fi
+# cppman -c
 
 # full
 if test -f ~/.hci/.full ; then
-    $ma {\
-        code,\
-        clion,\
-        pycharm-professional,\
-        vmware-workstation,\
-        qtcreator}
+$ma {\
+code,\
+clion,\
+pycharm-professional,\
+vmware-workstation,\
+qtcreator}
 
-    $ma {\
-        lrzsz,\
-        nutstore,\
-        plantuml,\
-        cairo-dock,\
-        electronic-wechat,\
-        shadowsocks-qt5,\
-        wps-office,\
-        ttf-wps-fonts,\
-        netease-cloud-music,\
-        typora,\
-        timeshift,\
-        nemiver,\
-        google-chrome,\
-        mpv}
+$ma {\
+lrzsz,\
+nutstore,\
+plantuml,\
+cairo-dock,\
+electronic-wechat,\
+shadowsocks-qt5,\
+wps-office,\
+ttf-wps-fonts,\
+netease-cloud-music,\
+typora,\
+timeshift,\
+nemiver,\
+google-chrome,\
+mpv}
 
-    $ya {\
-        debtap,\
-        xmind}
+$ya {\
+debtap,\
+xmind}
 fi
 
 [ $? -eq 0 ] && rm -rf ~/.hci
