@@ -80,7 +80,7 @@ fi
 # install zsh && ohmyzsh
 if [ -f ~/.hci/.c3 ]; then
     cd $jmpback
-    $ma {neovim,ruby,npm,fzf,autojump,the_silver_searcher,thefuck}
+    $ma {neovim,ruby,npm,fzf,autojump,the_silver_searcher,thefuck,bat}
 
     sudo python -m ensurepip
     sudo python -m pip install --upgrade pip setuptools wheel
@@ -134,7 +134,6 @@ cp ./fonts.conf ~/.config/fontconfig/
 fi
 
 # simple
-if test -f ~/.hci/.simple ; then
 $ma {\
 jdk8-openjdk,\
 jdk10-openjdk,\
@@ -147,16 +146,25 @@ bar,\
 tig,\
 gdb,\
 rust,\
+cmake,\
 crash,\
 strace,\
 zeromq,\
+docker,\
 thefuck,\
 you-get,\
 cppcheck,\
 systemtap,\
 cppman-git,\
 kcachegrind}
-fi
+
+sudo systemctl start docker
+sudo systemctl status docker
+sudo systemctl enable docker
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+sudo systemctl restart docker
+[ ! -f /etc/default/docker ] && su - -c "echo \"DOCKER_OPTS=\"--registry-mirror=http://hub-mirror.c.163.com\"\" >> /etc/default/docker"
 # cppman -c
 
 # full
@@ -168,8 +176,25 @@ pycharm-professional,\
 vmware-workstation,\
 intellij-idea-ultimate-edition,\
 qtcreator}
+# vmware
+sysinfo="`uname -r`"
+pri="`uname -r | cut -d. -f1`"
+sec="`uname -r | cut -d. -f2`"
+#subs=(${sysinfo//./ })
+sudo pacman -Qi "linux${pri}${sec}-headers" || ($ma "linux${pri}${sec}-headers" && sudo modprobe -a vmw_vmci vmmon)
+sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" || ($ma "linux${pri}${sec}-virtualbox-host-modules")
 
 $ma {\
+fcitx-im,\
+fcitx-configtool,\
+fcitx-gtk2,\
+fcitx-gtk3,\
+fcitx-qt4,\
+fcitx-qt5,\
+libidn,\
+fcitx-sogoupinyin,\
+fcitx-googlepinyin,\
+postgresql,\
 lrzsz,\
 nutstore,\
 plantuml,\
@@ -185,9 +210,23 @@ nemiver,\
 google-chrome,\
 mpv}
 
-#$ya {\
-#debtap,\
-#xmind}
+if [ ! -d ~/.config/autostart ]; then
+    mkdir ~/.config/autostart
+    cp /etc/xdg/autostart/fcitx-autostart.desktop ~/.cofnig/autostart
+echo "GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx" > ~/.pam_environment
+echo "export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx" > ~/.xprofile
+fi
+
+$ya {\
+debtap,\
+xmind}
+# virtualbox
+sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" && $ya virtualbox-ext-oracle && sudo modprobe vboxdrv
+
 fi
 
 [ $? -eq 0 ] && rm -rf ~/.hci
