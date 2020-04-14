@@ -6,6 +6,9 @@ setw -g mode-keys vi
 # 设置按键响应超时，默认1妙
 set-option -g escape-time 0
 set -g default-terminal "tmux-256color"
+set-option -sa terminal-overrides ',screen-256color:RGB'
+# for oder tmux versions use this instread: 
+set-option -ga terminal-overrides ',screen-256color:RGB:Tc'
 # Enable mouse mode
 setw -g mouse on
 set -g mouse on

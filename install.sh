@@ -23,11 +23,21 @@ declare exi=`grep '\[archlinuxcn\]' /etc/pacman.conf | wc -l`
 if test $exi -eq 0; then
     cd $jmpback
     #sudo pacman-mirrors --fasttrack
+    #sudo pacman-mirrors -i -c China -m rank
     su - -c "echo -E \"[archlinuxcn]
 SigLevel = Optional TrustedOnly
 Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch\" >> /etc/pacman.conf"
     sudo sed -i "s/^# \(Color\)/\1/" /etc/pacman.conf
     sudo pacman -Syy && sudo pacman -S archlinuxcn-keyring
+    sudo pacman -Syyu
+    # gpg difference error
+    # sudo pacman-key --refresh-keys
+    # sudo pacman-key --init
+    # sudo pacman-key --populate
+    # sudo pacman -Scc
+    # sudo pacman -Syu
+    # yinyongchengxumianban|shuzishizhong|diaoduqi|chuangkoulist|globalmenu| gap |zhuji|CPU|bluetooth|systemfuhe|huishouzhan yansetiqu|xitongtuopan|power|userswitch
+    # sudo pacman -S glibc lib32-glibc 
 fi
 
 # install
@@ -36,15 +46,22 @@ ya='sudo pacman -S --noconfirm --needed'
 $ma base-devel yay
 $ya -Syu
 $ma {curl,wget}
+declare gs=`git config --global --list | grep user | wc -l`
+[ $gs -gt 2 ] || (git config --global user.name "ZetZhang" && git config --global user.email "13660591402@163.com" && \
+    && [ -f /etc/pip.conf ] || ([ -z "`grep [global] /etc/pip.conf`" ] && [ -z "`grep [instsall] /etc/pip.conf`" ]) && \
+        echo '[global]
+index-url = https://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host=mirrors.aliyun.com' >> /etc/pip.conf)
 
 # install tmux
-$ma {tmux,xclip}
+$ma {libevent,tmux,xclip}
 if [ -f ~/.hci/.c1 ]; then
     # Tpm
     mkdir -p ~/.tmux/plugins
     cp ./tmux_conf ~/.tmux.conf
     cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
-    mv ~/.hci/.c1 ~/.hci/.c2
+    [ $? -eq 0 ] && mv ~/.hci/.c1 ~/.hci/.c2
 fi
 tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 # you should enter session and execute command: `prefix r` & `prefix I`
@@ -55,30 +72,48 @@ tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 
 $ma zsh
 if [ -f ~/.hci/.c2 ]; then
-    cd $jmpback && mv ~/.hci/.c2 ~/.hci/.c3
+    cd $jmpback
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    [ $? -eq 0 ] && mv ~/.hci/.c2 ~/.hci/.c3
 fi
 
 # install zsh && ohmyzsh
 if [ -f ~/.hci/.c3 ]; then
     cd $jmpback
-    $ma {fzf,autojump,the_silver_searcher,thefuck}
-    sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n)" ~/.zshrc
-    sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
-    sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
-    echo -E "export FZF_DEFAULT_OPTS='--height 80%'" >> ~/.zshrc
-    echo -E "export FZF_CTRL_T_OPTS=\"--preview '(highlight -O ansi -l {} 2> /dev/null || bat --style=numbers --color=always {} || tree -C {}) 2> /dev/null | head -500'\"" >> ~/.zshrc
-    echo -E "#--preview '[[ $(file --mime {}) =~ binary ]] &&
-        #echo {} is a binary file ||
-            #(bat --style=numbers --color=always {} ||
-            #highlight -O ansi -l {} ||
-            #coderay {} ||
-            #rougify {} ||
-            #cat {}) 2> /dev/null | head -500'" >> ~/.zshrc
-            echo -E "# fzf
-            export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
-    echo "eval $(thefuck --alias)" >> ~/.zshrc
-    source ~/.zshrc
+    $ma {neovim,ruby,npm,fzf,autojump,the_silver_searcher,thefuck}
+
+    sudo python -m ensurepip
+    sudo python -m pip install --upgrade pip setuptools wheel
+    sudo pip3 install colorma
+    
+    python -m pip install --user --upgrade pynvim
+    npm install express --registry=https://registry.npm.taobao.org
+    npm install -g neovim
+    gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/  
+    gem sources --update && gem install neovim && gem list -ra neovim
+    
+    declare zsc=`test -f ~/.zshrc && grep '^plugins=(' ~/.zshrc`
+    if [ zsc != "" ]; then
+        sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n)" ~/.zshrc
+        sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
+        sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
+        echo -E "export FZF_DEFAULT_OPTS='--height 80%'" >> ~/.zshrc
+        echo -E "export FZF_CTRL_T_OPTS=\"--preview '(highlight -O ansi -l {} 2> /dev/null || bat --style=numbers --color=always {} || tree -C {}) 2> /dev/null | head -500'\"" >> ~/.zshrc
+        echo -E "#--preview '[[ $(file --mime {}) =~ binary ]] &&
+            #echo {} is a binary file ||
+                #(bat --style=numbers --color=always {} ||
+                #highlight -O ansi -l {} ||
+                #coderay {} ||
+                #rougify {} ||
+                #cat {}) 2> /dev/null | head -500'" >> ~/.zshrc
+                echo -E "# fzf
+                export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
+        echo -E "eval $(thefuck --alias)" >> ~/.zshrc
+        echo -E "export EDITOR=vim" >> ~/.zshrc
+        echo -E "alias tmux='tmux -2'" >> ~/.zshrc
+        echo -E "alias vim='nvim'" >> ~/.zshrc
+        source ~/.zshrc
+    fi
     #sudo chsh -s /bin/zsh
     mv ~/.hci/.c3 ~/.hci/.c4
 fi
@@ -86,7 +121,17 @@ fi
 # zsh-autosuggestions
 [ -f ~/.hci/.c4 ] && git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && mv ~/.hci/.c4 ~/.hci/.c5
 # zsh-syntax-highlighting
-[ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && rm -rf ~//.hci/.c5
+[ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && mv ~/.hci/.c5 ~/.hci/.c6
+
+if [ -f ~/.hci/.c6 ]; then
+$ma ttf-roboto noto-fonts ttf-dejavu
+# 文泉驿
+$ma wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei
+# 思源字体
+$ma noto-fonts-cjk adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
+cp ./fonts.conf ~/.config/fontconfig/
+[ $? -eq 0 ] && rm -rf ~/.hci.c6
+fi
 
 # simple
 if test -f ~/.hci/.simple ; then
@@ -99,6 +144,7 @@ sudo archlinux-java set java-8-openjdk
 
 $ma {\
 bar,\
+tig,\
 gdb,\
 rust,\
 crash,\
@@ -116,10 +162,11 @@ fi
 # full
 if test -f ~/.hci/.full ; then
 $ma {\
-code,\
+visual-studio-code-bin,\
 clion,\
 pycharm-professional,\
 vmware-workstation,\
+intellij-idea-ultimate-edition,\
 qtcreator}
 
 $ma {\
@@ -127,20 +174,20 @@ lrzsz,\
 nutstore,\
 plantuml,\
 cairo-dock,\
+qq-linux,\
 electronic-wechat,\
 shadowsocks-qt5,\
 wps-office,\
 ttf-wps-fonts,\
 netease-cloud-music,\
 typora,\
-timeshift,\
 nemiver,\
 google-chrome,\
 mpv}
 
-$ya {\
-debtap,\
-xmind}
+#$ya {\
+#debtap,\
+#xmind}
 fi
 
 [ $? -eq 0 ] && rm -rf ~/.hci
