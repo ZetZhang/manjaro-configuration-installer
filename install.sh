@@ -47,8 +47,8 @@ $ma base-devel yay
 $ya -Syu
 $ma {curl,wget}
 declare gs=`git config --global --list | grep user | wc -l`
-[ $gs -gt 2 ] || (git config --global user.name "ZetZhang" && git config --global user.email "13660591402@163.com" && \
-    && [ -f /etc/pip.conf ] || ([ -z "`grep [global] /etc/pip.conf`" ] && [ -z "`grep [instsall] /etc/pip.conf`" ]) && \
+[ $gs -gt 2 ] || (git config --global user.name "ZetZhang" && git config --global user.email "13660591402@163.com" && \ 
+    [ -f /etc/pip.conf ] || ([ -z "`grep [global] /etc/pip.conf`" ] && [ -z "`grep [instsall] /etc/pip.conf`" ]) && \
         echo '[global]
 index-url = https://mirrors.aliyun.com/pypi/simple/
 [install]
@@ -146,16 +146,22 @@ bar,\
 tig,\
 gdb,\
 rust,\
+tree,\
 cmake,\
+aria2,\
 crash,\
 strace,\
 zeromq,\
 docker,\
+mlocate,\
 thefuck,\
 you-get,\
 cppcheck,\
+net-tools,\
 systemtap,\
 cppman-git,\
+gnu-netcat,\
+google-glog,\
 kcachegrind}
 
 sudo systemctl start docker
@@ -175,6 +181,7 @@ clion,\
 pycharm-professional,\
 vmware-workstation,\
 intellij-idea-ultimate-edition,\
+appmenu-gtk-module,\
 qtcreator}
 # vmware
 sysinfo="`uname -r`"
@@ -204,6 +211,7 @@ electronic-wechat,\
 shadowsocks-qt5,\
 wps-office,\
 ttf-wps-fonts,\
+wps-office-mui-zh-cn\
 netease-cloud-music,\
 typora,\
 nemiver,\
@@ -226,6 +234,9 @@ debtap,\
 xmind}
 # virtualbox
 sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" && $ya virtualbox-ext-oracle && sudo modprobe vboxdrv
+
+cd $jmpback && git clone https://github.com/BDisp/unlocker.git
+cd unlocker && ./lnx-install.sh 
 
 fi
 
