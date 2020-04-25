@@ -19,11 +19,17 @@ bind-key -T copy-mode MouseDragEnd1Pane send -X copy-pipe-and-cancel "reattach-t
 set -g status-bg black
 set -g status-fg yellow
 #set -g status-left-length 1000
-set -g status-right-length 50
+set -g status-right-length 60
 # 状态栏窗口名称之间的间隔
 set -wg window-status-separator " / "
 set -wg window-status-current-style "bg=#692124"
-set -g status-right "#[fg=green]#(uptime.pl)#[default] #[fg=blue]#(date +'%Y/%m/%d %H:%M:%S %a %Z')#[default] • #[fg=green]#(cut -d ' ' -f 1-3 /proc/loadavg)#[default]"
+set -g status-right "#[fg=green]#(uptime.pl)#[default] \
+#[fg=blue]#(date \ +'%Y/%m/%d %H:%M:%S %a %Z')#[default] • \
+#[fg=green]#(cut -d ' ' -f 1-3 \ /proc/loadavg)#[default]\
+#[fg=red] #(echo '[')#(echo \"scale=2;\
+        `cut -d ' ' -f 2 /sys/class/power_supply/BAT0/charge_now`*100/ \
+        `cut -d ' ' -f 2 /sys/class/power_supply/BAT0/charge_full`*100/100\"|bc)#(echo '%]')\
+#[default]"
 set -g message-style "bg=#ffc78f, fg=#ff0000"
 # 使用xclip接入系统粘贴板
 bind C-c run " tmux save-buffer - | xclip -i -sel clipboard"
