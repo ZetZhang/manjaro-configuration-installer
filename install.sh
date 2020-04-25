@@ -56,10 +56,15 @@ trusted-host=mirrors.aliyun.com' >> /etc/pip.conf)
 
 # install tmux
 $ma {libevent,tmux,xclip}
+$ma {tlp,tlp-rdw,smartmontools}
+sudo systemctl enable tlp.service
+sudo systemctl enable tlp-sleep.service
+sudo systemctl mask systemd-rfkill.service
+sudo systemctl mask systemd-rfkill.socket
 if [ -f ~/.hci/.c1 ]; then
     # Tpm
     mkdir -p ~/.tmux/plugins
-    cp ./tmux_conf ~/.tmux.conf
+    cp ./tmux.conf ~/.tmux.conf && cp ./tmux.conf.local ~/.tmux.conf.local
     cd ~/.tmux/plugins && git clone https://github.com/tmux-plugins/tpm
     [ $? -eq 0 ] && mv ~/.hci/.c1 ~/.hci/.c2
 fi
@@ -91,10 +96,12 @@ if [ -f ~/.hci/.c3 ]; then
     npm install -g neovim
     gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/  
     gem sources --update && gem install neovim && gem list -ra neovim
+
+    export ZPLUG_HOME=~/.zplug && git clone https://github.com/zplug/zplug $ZPLUG_HOME
     
     declare zsc=`test -f ~/.zshrc && grep '^plugins=(' ~/.zshrc`
     if [ zsc != "" ]; then
-        sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n)" ~/.zshrc
+        sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n\tgitignore\n\tcp\n\tzsh_reload\n\tz\n\tper-directory-history\n\tcolored-man-pages\n\tsudo\n\thistory-substring-search\n\tgit-open\n\tsafe-paste\n)" ~/.zshrc
         sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
         sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
         echo -E "export FZF_DEFAULT_OPTS='--height 80%'" >> ~/.zshrc
@@ -106,12 +113,21 @@ if [ -f ~/.hci/.c3 ]; then
                 #coderay {} ||
                 #rougify {} ||
                 #cat {}) 2> /dev/null | head -500'" >> ~/.zshrc
-                echo -E "# fzf
-                export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
+        echo -E "# fzf
+        export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
         echo -E "eval $(thefuck --alias)" >> ~/.zshrc
         echo -E "export EDITOR=vim" >> ~/.zshrc
         echo -E "alias tmux='tmux -2'" >> ~/.zshrc
         echo -E "alias vim='nvim'" >> ~/.zshrc
+        echo -E "bindkey '^P' history-substring-search-up" >> ~/.zshrc
+        echo -E "bindkey '^N' history-substring-search-down" >> ~/.zshrc
+        echo -E "# history
+        "HIST_STAMPS="yyyy-mm-dd" >> ~/.zshrc
+        echo -E "# trash
+        alias rmt='trash'" >> ~/.zshrc
+        echo -E "# suggestions
+        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=110'" >> ~/.zshrc
+
         source ~/.zshrc
     fi
     #sudo chsh -s /bin/zsh
@@ -122,15 +138,18 @@ fi
 [ -f ~/.hci/.c4 ] && git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && mv ~/.hci/.c4 ~/.hci/.c5
 # zsh-syntax-highlighting
 [ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && mv ~/.hci/.c5 ~/.hci/.c6
+# git-open
+[ -f ~/.hci/.c6 ] && git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/git-open && mv ~/.hci/.c6 ~/.hci/.c7
 
-if [ -f ~/.hci/.c6 ]; then
+
+if [ -f ~/.hci/.c7 ]; then
 $ma ttf-roboto noto-fonts ttf-dejavu
 # 文泉驿
 $ma wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei
 # 思源字体
 $ma noto-fonts-cjk adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
 cp ./fonts.conf ~/.config/fontconfig/
-[ $? -eq 0 ] && rm -rf ~/.hci.c6
+[ $? -eq 0 ] && rm -rf ~/.hci.c7
 fi
 
 # simple
@@ -150,6 +169,7 @@ tree,\
 cmake,\
 aria2,\
 crash,\
+trash,\
 strace,\
 zeromq,\
 docker,\
@@ -162,6 +182,7 @@ systemtap,\
 cppman-git,\
 gnu-netcat,\
 google-glog,\
+lksctp-tools,\
 kcachegrind}
 
 sudo systemctl start docker
