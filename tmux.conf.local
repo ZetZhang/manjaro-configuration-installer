@@ -126,7 +126,7 @@ tmux_conf_theme_window_status_format='#I #W'
 tmux_conf_theme_window_status_current_fg='#000000'      # black
 tmux_conf_theme_window_status_current_bg='#00afff'      # light blue
 tmux_conf_theme_window_status_current_attr='bold'
-tmux_conf_theme_window_status_current_format='#I #W'
+tmux_conf_theme_window_status_current_format='#I  #W'
 #tmux_conf_theme_window_status_current_format='#{circled_window_index} #W'
 #tmux_conf_theme_window_status_current_format='#I #W#{?window_zoomed_flag,🔍,}'
 
@@ -180,8 +180,7 @@ tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_status_left=' ❐ #S |#{?battery_status, #{battery_status},}#{?battery_percentage, #{battery_percentage},} '
-tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized}, %Y/%m/%d %H:%M:%S %a %Z | #{loadavg} | #{username}#{root} | '
-# tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
+tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized},  %Y/%m/%d %H:%M:%S %a %Z | #{loadavg} | #{username}#{root} | '
 # set -g status-right "#[fg=green]#(uptime.pl)#[default] \
 # #[fg=blue]#(date \ +'%Y/%m/%d %H:%M:%S %a %Z')#[default] • \
 # #[fg=green]#(cut -d ' ' -f 1-3 \ /proc/loadavg)#[default]\

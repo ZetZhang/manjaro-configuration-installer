@@ -171,6 +171,7 @@ aria2,\
 crash,\
 trash,\
 strace,\
+xinetd,\
 zeromq,\
 docker,\
 mlocate,\
@@ -191,7 +192,10 @@ sudo systemctl enable docker
 sudo groupadd docker
 sudo gpasswd -a $USER docker
 sudo systemctl restart docker
+su - -c "echo 0 >/proc/sys/kernel/yama/ptrace_scope && exit:"
 [ ! -f /etc/default/docker ] && su - -c "echo \"DOCKER_OPTS=\"--registry-mirror=http://hub-mirror.c.163.com\"\" >> /etc/default/docker"
+sudo systemctl start xinetd.service
+sudo systemctl status xinetd.service && sudo systemctl enable xinetd.service
 # cppman -c
 
 # full
@@ -252,9 +256,12 @@ fi
 
 $ya {\
 debtap,\
+rsyslog,\
 xmind}
 # virtualbox
 sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" && $ya virtualbox-ext-oracle && sudo modprobe vboxdrv
+sudo systemctl restart rsyslog.service
+sudo systemctl status rssylog.service && sudo systemctl enable rsyslog.service
 
 cd $jmpback && git clone https://github.com/BDisp/unlocker.git
 cd unlocker && ./lnx-install.sh 
