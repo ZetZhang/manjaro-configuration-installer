@@ -57,10 +57,6 @@ trusted-host=mirrors.aliyun.com' >> /etc/pip.conf)
 # install tmux
 $ma {libevent,tmux,xclip}
 $ma {tlp,tlp-rdw,smartmontools}
-sudo systemctl enable tlp.service
-sudo systemctl enable tlp-sleep.service
-sudo systemctl mask systemd-rfkill.service
-sudo systemctl mask systemd-rfkill.socket
 if [ -f ~/.hci/.c1 ]; then
     # Tpm
     mkdir -p ~/.tmux/plugins
@@ -186,16 +182,9 @@ google-glog,\
 lksctp-tools,\
 kcachegrind}
 
-sudo systemctl start docker
-sudo systemctl status docker
-sudo systemctl enable docker
-sudo groupadd docker
-sudo gpasswd -a $USER docker
-sudo systemctl restart docker
-su - -c "echo 0 >/proc/sys/kernel/yama/ptrace_scope && exit:"
-[ ! -f /etc/default/docker ] && su - -c "echo \"DOCKER_OPTS=\"--registry-mirror=http://hub-mirror.c.163.com\"\" >> /etc/default/docker"
-sudo systemctl start xinetd.service
-sudo systemctl status xinetd.service && sudo systemctl enable xinetd.service
+$ya {\
+rsyslog}
+
 # cppman -c
 
 # full
@@ -256,17 +245,32 @@ fi
 
 $ya {\
 debtap,\
-rsyslog,\
 xmind}
 # virtualbox
 sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" && $ya virtualbox-ext-oracle && sudo modprobe vboxdrv
-sudo systemctl restart rsyslog.service
-sudo systemctl status rssylog.service && sudo systemctl enable rsyslog.service
 
 cd $jmpback && git clone https://github.com/BDisp/unlocker.git
 cd unlocker && ./lnx-install.sh 
 
 fi
+
+# systemctl
+if which tlp; then
+    sudo systemctl enable tlp.service
+    sudo systemctl enable tlp-sleep.service
+    sudo systemctl mask systemd-rfkill.service
+    sudo systemctl mask systemd-rfkill.socket
+fi
+if which docker; then
+    sudo groupadd docker
+    sudo gpasswd -a $USER docker
+    sudo systemctl start docker && sudo systemctl enable docker
+    su - -c "echo 0 >/proc/sys/kernel/yama/ptrace_scope && exit:"
+    [ ! -f /etc/default/docker ] && su - -c "echo \"DOCKER_OPTS=\"--registry-mirror=http://hub-mirror.c.163.com\"\" >> /etc/default/docker"
+fi
+which xinetd && sudo systemctl start xinetd.service && sudo systemctl enable xinetd.service
+ls /usr/lib/systemd/system/rsyslog.service && sudo systemctl start rsyslog.service && sudo systemctl enable rsyslog.service
+which vmware && sudo systemctl start vmware-networks.service && sudo systemctl enable vmware-networks.service
 
 [ $? -eq 0 ] && rm -rf ~/.hci
 fi
