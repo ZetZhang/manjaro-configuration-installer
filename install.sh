@@ -23,13 +23,11 @@ declare exi=`grep '\[archlinuxcn\]' /etc/pacman.conf | wc -l`
 if test $exi -eq 0; then
     cd $jmpback
     #sudo pacman-mirrors --fasttrack
+    sudo pacman-mirrors -i -c China -m rank
     su - -c "echo -E '[archlinuxcn]
 SigLevel = Optional TrustedOnly
 Server = https://mirrors.ustc.edu.cn/archlinuxcn/\$arch' >> /etc/pacman.conf"
     sudo sed -i "s/^#\(Color\)/\1/" /etc/pacman.conf
-    sudo pacman -Syy && sudo pacman -S archlinuxcn-keyring
-    sudo pacman-mirrors -i -c China -m rank
-    sudo pacman --noconfirm -Syyu
     # gpg difference error
     # sudo pacman-key --refresh-keys
     # sudo pacman-key --init
@@ -42,9 +40,12 @@ fi
 # install
 ma='sudo pacman -S --noconfirm --needed'
 ya='yay -S --noconfirm --needed'
-$ma base-devel yay
-$ma {curl,wget}
-yay --noconfirm --needed --overrite "*" -Syyu
+sudo pacman --noconfirm --needed -Syy 
+sudo pacman --noconfirm --needed -S archlinuxcn-keyring
+sudo pacman --noconfirm -Syyu
+$ma base-devel yay && yay --noconfirm --needed --overrite "*" -Syyu
+# $ma {curl,wget,libevent}
+# $ma {tlp,tlp-rdw,smartmontools}
 
 declare gs=`git config --global --list | grep user | wc -l`
 [ $gs -gt 2 ] || (git config --global user.name "ZetZhang" && git config --global user.email "13660591402@163.com" && \ 
@@ -55,8 +56,7 @@ index-url = https://mirrors.aliyun.com/pypi/simple/
 trusted-host=mirrors.aliyun.com' >> /etc/pip.conf)
 
 # install tmux
-$ma {libevent,tmux,xclip}
-$ma {tlp,tlp-rdw,smartmontools}
+$ma {tmux,xclip}
 if [ -f ~/.hci/.c1 ]; then
     # Tpm
     mkdir -p ~/.tmux/plugins
@@ -74,12 +74,18 @@ tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 $ma zsh
 if [ -f ~/.hci/.c2 ]; then
     cd $jmpback
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    $ma links
+    # FIXME：确保复制到真实IP
+    links https://githubusercontent.com.ipaddress.com/raw.githubusercontent.com
+    cpyip=`xclip -o`
+    # sduo systemctl restart NetworkManager.service
+    cpyip=`xclip -o`; su - -c "echo '$cpyip raw.githubusercontent.com' >> /etc/hosts"
+    sudo systemctl restart NetworkManager.service && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     [ $? -eq 0 ] && mv ~/.hci/.c2 ~/.hci/.c3
 fi
 
 # install zsh && ohmyzsh
-if [ -f ~/.hci/.c3 ]; then
+if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
     cd $jmpback
     $ma {neovim,ruby,npm,fzf,autojump,the_silver_searcher,thefuck,bat}
 
@@ -165,7 +171,6 @@ tree,\
 cmake,\
 aria2,\
 crash,\
-trash,\
 strace,\
 xinetd,\
 zeromq,\
@@ -183,6 +188,7 @@ lksctp-tools,\
 kcachegrind}
 
 $ya {\
+trash-cli,\
 rsyslog}
 
 # cppman -c
