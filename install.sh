@@ -18,34 +18,34 @@ jmpback=`pwd`
 
 if test -d ~/.hci ; then
 
-# source server init
+# source server init：以下基于ustc源
 declare exi=`grep '\[archlinuxcn\]' /etc/pacman.conf | wc -l`
 if test $exi -eq 0; then
     cd $jmpback
     #sudo pacman-mirrors --fasttrack
-    #sudo pacman-mirrors -i -c China -m rank
-    su - -c "echo -E \"[archlinuxcn]
+    su - -c "echo -E '[archlinuxcn]
 SigLevel = Optional TrustedOnly
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch\" >> /etc/pacman.conf"
-    sudo sed -i "s/^# \(Color\)/\1/" /etc/pacman.conf
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/\$arch' >> /etc/pacman.conf"
+    sudo sed -i "s/^#\(Color\)/\1/" /etc/pacman.conf
     sudo pacman -Syy && sudo pacman -S archlinuxcn-keyring
-    sudo pacman -Syyu
+    sudo pacman-mirrors -i -c China -m rank
+    sudo pacman --noconfirm -Syyu
     # gpg difference error
     # sudo pacman-key --refresh-keys
     # sudo pacman-key --init
     # sudo pacman-key --populate
     # sudo pacman -Scc
     # sudo pacman -Syu
-    # yinyongchengxumianban|shuzishizhong|diaoduqi|chuangkoulist|globalmenu| gap |zhuji|CPU|bluetooth|systemfuhe|huishouzhan yansetiqu|xitongtuopan|power|userswitch
     # sudo pacman -S glibc lib32-glibc 
 fi
 
 # install
 ma='sudo pacman -S --noconfirm --needed'
-ya='sudo pacman -S --noconfirm --needed'
+ya='yay -S --noconfirm --needed'
 $ma base-devel yay
-$ya -Syu
 $ma {curl,wget}
+yay --noconfirm --needed --overrite "*" -Syyu
+
 declare gs=`git config --global --list | grep user | wc -l`
 [ $gs -gt 2 ] || (git config --global user.name "ZetZhang" && git config --global user.email "13660591402@163.com" && \ 
     [ -f /etc/pip.conf ] || ([ -z "`grep [global] /etc/pip.conf`" ] && [ -z "`grep [instsall] /etc/pip.conf`" ]) && \
