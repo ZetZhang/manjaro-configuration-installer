@@ -74,13 +74,23 @@ tmux new -d -s test && tmux source ~/.tmux.conf && tmux kill-session -t test
 $ma zsh
 if [ -f ~/.hci/.c2 ]; then
     cd $jmpback
-    $ma links
-    # FIXME：确保复制到真实IP
-    links https://githubusercontent.com.ipaddress.com/raw.githubusercontent.com
-    cpyip=`xclip -o`
-    # sduo systemctl restart NetworkManager.service
-    cpyip=`xclip -o`; su - -c "echo '$cpyip raw.githubusercontent.com' >> /etc/hosts"
+    su - -c "sed '/raw.githubusercontent.com/d' /etc/hosts"
+    # >by links
+    # $ma links
+    # # FIXME：确保复制到真实IP
+    # links https://githubusercontent.com.ipaddress.com/raw.githubusercontent.com
+    # cpyip=`xclip -o`
+    # # sduo systemctl restart NetworkManager.service
+    # cpyip=`xclip -o`; su - -c "echo '$cpyip raw.githubusercontent.com' >> /etc/hosts"
+
+    # >by curl
+    export result=`curl https://githubusercontent.com.ipaddress.com/raw.githubusercontent.com | \
+        sed -e 's/\(<ul[^>]*>\)/\1\n/g' -e 's/\(<\/ul[^>]*>\)/\n\1/g' | \
+        grep -E '<li>([0-9]{1,3}.){3}[0-9]{1,3}</li>' | \
+        sed -e 's/<li[^>]*>//g' -e 's/<\/li[^>]*>//g' | head -n 1`
+    su - -c "echo '$result raw.githubusercontent.com' >> /etc/hosts"
     sudo systemctl restart NetworkManager.service && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    # Need to exit manually (Ctrl + D)
     [ $? -eq 0 ] && mv ~/.hci/.c2 ~/.hci/.c3
 fi
 
