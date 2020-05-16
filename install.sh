@@ -176,6 +176,7 @@ $ma {\
 bar,\
 tig,\
 gdb,\
+mosh,\
 rust,\
 tree,\
 cmake,\
@@ -239,6 +240,11 @@ cairo-dock,\
 qq-linux,\
 electronic-wechat,\
 shadowsocks-qt5,\
+v2ray,\
+qv2ray,\
+proxychains-ng,\
+wireshark-qt,\
+deepin.com.baidu.pan,\
 wps-office,\
 ttf-wps-fonts,\
 wps-office-mui-zh-cn\
@@ -291,7 +297,13 @@ which vmware && sudo systemctl start vmware-networks.service && sudo systemctl e
 [ $? -eq 0 ] && rm -rf ~/.hci
 fi
 
-$ma rust
 cd $jmpback
-git clone https://github.com/ZetZhang/vim-congiration-installer.git 
-cd ./vim-congiration-installer && ./install.sh
+git clone https://github.com/ZetZhang/vim-congiration-installer.git cd 
+./vim-congiration-installer && ./install.sh
+
+# game
+# $ {\
+# nethack,\
+# unnethack,\
+# dwarffortress,\
+# cataclysm-dda}
