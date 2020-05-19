@@ -116,17 +116,10 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n\tgitignore\n\tcp\n\tzsh_reload\n\tz\n\tper-directory-history\n\tcolored-man-pages\n\tsudo\n\thistory-substring-search\n\tgit-open\n\tsafe-paste\n)" ~/.zshrc
         sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
         sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
-        echo -E "export FZF_DEFAULT_OPTS='--height 80%'" >> ~/.zshrc
-        echo -E "export FZF_CTRL_T_OPTS=\"--preview '(highlight -O ansi -l {} 2> /dev/null || bat --style=numbers --color=always {} || tree -C {}) 2> /dev/null | head -500'\"" >> ~/.zshrc
-        echo -E "#--preview '[[ $(file --mime {}) =~ binary ]] &&
-            #echo {} is a binary file ||
-                #(bat --style=numbers --color=always {} ||
-                #highlight -O ansi -l {} ||
-                #coderay {} ||
-                #rougify {} ||
-                #cat {}) 2> /dev/null | head -500'" >> ~/.zshrc
         echo -E "# fzf
-        export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
+        export FZF_DEFAULT_OPTS='--height 80%'" >> ~/.zshrc
+        echo -E "export FZF_CTRL_T_OPTS=\"--preview '(highlight -O ansi -l {} 2> /dev/null || bat --style=numbers --color=always {} || tree -C {}) 2> /dev/null | head -500'\"" >> ~/.zshrc
+        echo -E "export FZF_DEFAULT_COMMAND='rg --files --hidden'" >> ~/.zshrc
         echo -E "eval $(thefuck --alias)" >> ~/.zshrc
         echo -E "export EDITOR=vim" >> ~/.zshrc
         echo -E "alias tmux='tmux -2'" >> ~/.zshrc
@@ -139,6 +132,10 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         alias rmt='trash'" >> ~/.zshrc
         echo -E "# suggestions
         ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=110'" >> ~/.zshrc
+        # echo -E "# proxychains4
+        # alias pc='proxychains4'" >> ~/.zshrc
+        # echo -E "# asynctask
+        # alias task='~/.vim/plugged/asynctasks.vim/bin/asynctask -f'" >> ~/.zshrc
 
         source ~/.zshrc
     fi
@@ -306,4 +303,5 @@ git clone https://github.com/ZetZhang/vim-congiration-installer.git cd
 # nethack,\
 # unnethack,\
 # dwarffortress,\
+# dwarffortress-tile,\
 # cataclysm-dda}
