@@ -170,9 +170,11 @@ archlinux-java status
 sudo archlinux-java set java-8-openjdk
 
 $ma {\
+nnn,\
 bar,\
 tig,\
 gdb,\
+perf,\
 mosh,\
 rust,\
 tree,\
@@ -183,6 +185,7 @@ strace,\
 xinetd,\
 zeromq,\
 docker,\
+sysstat,\
 mlocate,\
 thefuck,\
 you-get,\
@@ -193,13 +196,16 @@ cppman-git,\
 gnu-netcat,\
 google-glog,\
 lksctp-tools,\
+ttf-cascadia-code,\
+nerd-fonts-fira-code,\
 kcachegrind}
 
 $ya {\
 trash-cli,\
 rsyslog}
 
-# cppman -c
+which cppman && ( cppman -c -m true -p nvim -r cppreference.com )
+which perf && ( sudo sysctl -w kernel.perf_event_paranoid=-1 )
 
 # full
 if test -f ~/.hci/.full ; then
@@ -230,10 +236,11 @@ libidn,\
 fcitx-sogoupinyin,\
 fcitx-googlepinyin,\
 postgresql,\
+libpqxx,\
 lrzsz,\
 nutstore,\
 plantuml,\
-cairo-dock,\
+plank,\
 qq-linux,\
 electronic-wechat,\
 shadowsocks-qt5,\
