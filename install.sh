@@ -174,7 +174,10 @@ nnn,\
 bar,\
 tig,\
 gdb,\
+mtr,\
+zstd,\
 perf,\
+nmon,\
 mosh,\
 rust,\
 tree,\
@@ -192,6 +195,7 @@ you-get,\
 cppcheck,\
 net-tools,\
 systemtap,\
+traceroute,\
 cppman-git,\
 gnu-netcat,\
 google-glog,\
@@ -274,6 +278,8 @@ debtap,\
 xmind}
 # virtualbox
 sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" && $ya virtualbox-ext-oracle && sudo modprobe vboxdrv
+# wireshark
+sudo pacman -Qi wireshark-qt && sudo chgrp $USER /usr/bin/dumpcap && sudo chmod 750 /usr/bin/dumpcap && sudo setcap cap_net_raw,cap_net_admin+eip /usr/bin/dumpcap
 
 cd $jmpback && git clone https://github.com/BDisp/unlocker.git
 cd unlocker && ./lnx-install.sh 
