@@ -136,6 +136,8 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         # alias pc='proxychains4'" >> ~/.zshrc
         # echo -E "# asynctask
         # alias task='~/.vim/plugged/asynctasks.vim/bin/asynctask -f'" >> ~/.zshrc
+        echo -E "# incr
+        source ~/.oh-my-zsh/plugins/incr/incr*.zsh" >> ~/.zshrc
 
         source ~/.zshrc
     fi
@@ -149,6 +151,9 @@ fi
 [ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && mv ~/.hci/.c5 ~/.hci/.c6
 # git-open
 [ -f ~/.hci/.c6 ] && git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/git-open && mv ~/.hci/.c6 ~/.hci/.c7
+
+# incr
+mkdir -p ~/.oh-my-zsh/plugins/incr/ && cd ~/.oh-my-zsh/plugins/incr/ && wget https://mimosa-pudica.net/src/incr-0.2.zsh 
 
 
 if [ -f ~/.hci/.c7 ]; then
@@ -188,6 +193,7 @@ strace,\
 xinetd,\
 zeromq,\
 docker,\
+todotxt,\
 sysstat,\
 mlocate,\
 thefuck,\
@@ -210,6 +216,10 @@ rsyslog}
 
 which cppman && ( cppman -c -m true -p nvim -r cppreference.com )
 which perf && ( sudo sysctl -w kernel.perf_event_paranoid=-1 )
+
+cd $jmpback && git clone https://github.com/todotxt/todo.txt-cli.git
+which todo.sh && cd todo.txt-cli && make && sudo make install && mkdir ~/.todo && cp todo.cfg ~/.todo/config
+# config todo_cfg is neccessary
 
 # full
 if test -f ~/.hci/.full ; then
@@ -260,6 +270,9 @@ netease-cloud-music,\
 typora,\
 nemiver,\
 google-chrome,\
+anbox-git,\
+anbox-image,\
+anbox-modules-dkms-git,\
 mpv}
 
 if [ ! -d ~/.config/autostart ]; then
@@ -272,6 +285,15 @@ echo "export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx" > ~/.xprofile
 fi
+
+# use xDdroid instead of the anbox
+# sudo modprobe binder_linux                                  
+# sudo modprobe ashmem_linux
+# sudo systemctl start anbox-container-manager.service        
+# systemctl --user start anbox-session-manager.service
+# sudo systemctl enable anbox-container-manager
+# sudo systemctl enable anbox-session-manager --user
+# nmcli con add type bridge ifname anbox0 -- connection.id anbox-net ipv4.method shared ipv4.addresses 192.168.0.40/24
 
 $ya {\
 debtap,\
