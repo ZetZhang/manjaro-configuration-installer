@@ -240,6 +240,7 @@ sudo pacman -Qi "linux${pri}${sec}-headers" || ($ma "linux${pri}${sec}-headers" 
 sudo pacman -Qi "linux${pri}${sec}-virtualbox-host-modules" || ($ma "linux${pri}${sec}-virtualbox-host-modules")
 
 $ma {\
+rsibreak,\
 fcitx-im,\
 fcitx-configtool,\
 fcitx-gtk2,\
@@ -270,6 +271,7 @@ netease-cloud-music,\
 typora,\
 nemiver,\
 google-chrome,\
+scrcpy,\
 anbox-git,\
 anbox-image,\
 anbox-modules-dkms-git,\
