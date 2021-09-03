@@ -109,11 +109,15 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
     gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/  
     gem sources --update && gem install neovim && gem list -ra neovim
 
-    export ZPLUG_HOME=~/.zplug && git clone https://github.com/zplug/zplug $ZPLUG_HOME
+    # zplug [out of data]
+    # export ZPLUG_HOME=~/.zplug && git clone https://github.com/zplug/zplug $ZPLUG_HOME
+    # zinit instead
+    # sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
+    mkdir ~/.zinit && git clone https://github.com/zdharma/zinit.git ~/.zinit/bin
     
     declare zsc=`test -f ~/.zshrc && grep '^plugins=(' ~/.zshrc`
     if [ zsc != "" ]; then
-        sed -i "/^plugins=(/a\ \tgit\n\tzsh-syntax-highlighting\n\tautojump\n\tfzf\n\tzsh-autosuggestions\n\tweb-search\n\textract\n\tgitignore\n\tcp\n\tzsh_reload\n\tz\n\tper-directory-history\n\tcolored-man-pages\n\tsudo\n\thistory-substring-search\n\tgit-open\n\tsafe-paste\n)" ~/.zshrc
+        sed -i "/^plugins=(/a\ \t#git\n\t#zsh-syntax-highlighting\n\t#autojump\n\t#fzf\n\t#zsh-autosuggestions\n\t#web-search\n\t#extract\n\t#gitignore\n\t#cp\n\t#zsh_reload\n\t#z\n\t#per-directory-history\n\t#colored-man-pages\n\t#sudo\n\t#history-substring-search\n\t#git-open\n\t#safe-paste\n\tthemes\n\t#vi-mode\n\t#command-not-found\n\t#auto-notify $plugins # zinit instead)" ~/.zshrc
         sed -i "s/\(^plugins=(\)git)/\1/" ~/.zshrc
         sed -i "s/^# \(export LANG\)/\1/" ~/.zshrc
         echo -E "# fzf
@@ -132,12 +136,78 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         alias rmt='trash'" >> ~/.zshrc
         echo -E "# suggestions
         ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=110'" >> ~/.zshrc
-        # echo -E "# proxychains4
-        # alias pc='proxychains4'" >> ~/.zshrc
-        # echo -E "# asynctask
-        # alias task='~/.vim/plugged/asynctasks.vim/bin/asynctask -f'" >> ~/.zshrc
+        echo -E "# proxychains4
+        alias pc='proxychains4'" >> ~/.zshrc
+        echo -E "# asynctask
+        alias task='~/.vim/plugged/asynctasks.vim/bin/asynctask -f'" >> ~/.zshrc
         echo -E "# incr
-        source ~/.oh-my-zsh/plugins/incr/incr*.zsh" >> ~/.zshrc
+        # source ~/.oh-my-zsh/plugins/incr/incr*.zsh" >> ~/.zshrc
+        echo -E "# zinit
+        if [[ -f ~/.zinit/bin/zinit.zsh  ]] {
+            source ~/.zinit/bin/zinit.zsh
+
+            # autu-ls 
+            zplugin ice wait'0' lucid
+            zplugin load desyncr/auto-ls
+            AUTO_LS_COMMANDS=(custom_function git-status)
+            auto-ls-custom_function () { ls --color }
+
+            # auto-notify
+            zinit light 'MichaelAquilina/zsh-auto-notify'
+            # Set threshold to 20seconds
+            export AUTO_NOTIFY_THRESHOLD=5
+            export AUTO_NOTIFY_TITLE='Hey! %command has just finished'
+            export AUTO_NOTIFY_BODY='It completed in %elapsed seconds with Ecode %exit_code'
+            # Set notification expiry to 10 seconds
+            export AUTO_NOTIFY_EXPIRE_TIME=5000
+            # redefine what is ignored by auto-notify
+            export AUTO_NOTIFY_IGNORE=('docker' 'sleep' '/usr/bin/vim' '/usr/bin/nvim' 'vim' 'nvim' 'kate' 'nano' 'code')
+            # export AUTO_NOTIFY_WHITELIST=('apt-get' 'docker')
+
+            # zsh_autosuggestions
+            # zinit ice lucid wait='0' atload='_zsh_autosuggest_start'
+            zinit light zsh-users/zsh-autosuggestions
+
+            # zsh-syntax-highlighting
+            zinit light zsh-users/zsh-syntax-highlighting
+
+            # git-open
+            zinit load paulirish/git-open
+
+            # incr
+            # There are conflicts (themes & completed)
+            zinit snippet https://github.com/makeitjoe/incr.zsh/blob/master/incr.plugin.zsh
+
+            # OMZ lib
+            zinit snippet OMZ::lib/clipboard.zsh
+            zinit snippet OMZ::lib/completion.zsh
+            zinit snippet OMZ::lib/history.zsh
+            zinit snippet OMZ::lib/key-bindings.zsh
+            zinit snippet OMZ::lib/git.zsh
+            zinit snippet OMZ::lib/theme-and-appearance.zsh
+
+            # OMZ plugins
+            zinit ice svn
+            zinit snippet OMZ::plugins/git
+            zinit snippet OMZ::plugins/autojump
+            zinit snippet OMZ::plugins/fzf
+            zinit snippet OMZ::plugins/web-search
+            zinit snippet OMZ::plugins/extract
+            zinit snippet OMZ::plugins/gitignore
+            zinit snippet OMZ::plugins/cp
+            zinit snippet OMZ::plugins/zsh_reload
+            # zinit snippet https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/per-directory-history/per-directory-history.zsh
+            bindkey '^P' history-substring-search-up
+            bindkey '^N' history-substring-search-down
+            zinit snippet OMZ::plugins/colored-man-pages
+            # zinit snippet OMZ::plugins/sudo
+            # zinit snippet OMZ::plugins/z
+            zinit load zsh-users/zsh-history-substring-search
+            zinit snippet OMZ::plugins/safe-paste
+            # zinit snippet OMZ::plugins/themes
+            # zinit snippet OMZ::plugins/vi-mode
+            # zinit snippet OMZ::plugins/command-not-found
+        }" >> ~/.zshrc
 
         source ~/.zshrc
     fi
@@ -146,11 +216,11 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
 fi
 
 # zsh-autosuggestions
-[ -f ~/.hci/.c4 ] && git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && mv ~/.hci/.c4 ~/.hci/.c5
+# [ -f ~/.hci/.c4 ] && git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && mv ~/.hci/.c4 ~/.hci/.c5
 # zsh-syntax-highlighting
-[ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && mv ~/.hci/.c5 ~/.hci/.c6
+# [ -f ~/.hci/.c5 ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && mv ~/.hci/.c5 ~/.hci/.c6
 # git-open
-[ -f ~/.hci/.c6 ] && git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/git-open && mv ~/.hci/.c6 ~/.hci/.c7
+# [ -f ~/.hci/.c6 ] && git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/git-open && mv ~/.hci/.c6 ~/.hci/.c7
 
 # incr
 mkdir -p ~/.oh-my-zsh/plugins/incr/ && cd ~/.oh-my-zsh/plugins/incr/ && wget https://mimosa-pudica.net/src/incr-0.2.zsh 
@@ -212,6 +282,7 @@ kcachegrind}
 
 $ya {\
 trash-cli,\
+zplug,\
 rsyslog}
 
 which cppman && ( cppman -c -m true -p nvim -r cppreference.com )
@@ -256,6 +327,7 @@ lrzsz,\
 nutstore,\
 plantuml,\
 plank,\
+crossover,\
 qq-linux,\
 electronic-wechat,\
 shadowsocks-qt5,\
