@@ -162,7 +162,7 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
             export AUTO_NOTIFY_EXPIRE_TIME=5000
             # redefine what is ignored by auto-notify
             export AUTO_NOTIFY_IGNORE=('docker' 'sleep' '/usr/bin/vim' '/usr/bin/nvim' 'vim' 'nvim' 'kate' 'nano' 'code')
-            # export AUTO_NOTIFY_WHITELIST=('apt-get' 'docker')
+            # export AUTO_NOTIFY_WHITELIST=('apt-get' 'yay' 'pacman' 'curl' 'you-get')
 
             # zsh_autosuggestions
             # zinit ice lucid wait='0' atload='_zsh_autosuggest_start'
@@ -259,11 +259,13 @@ tree,\
 cmake,\
 aria2,\
 crash,\
+ranger,\
 strace,\
 xinetd,\
 zeromq,\
 docker,\
 todotxt,\
+ripgrep,\
 sysstat,\
 mlocate,\
 thefuck,\
@@ -274,6 +276,7 @@ systemtap,\
 traceroute,\
 cppman-git,\
 gnu-netcat,\
+ansiweather,\
 google-glog,\
 lksctp-tools,\
 ttf-cascadia-code,\
