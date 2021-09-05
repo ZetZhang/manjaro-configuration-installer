@@ -312,16 +312,19 @@ tig,\
 gdb,\
 mtr,\
 mpd,\
+rofi,\
 zstd,\
 perf,\
 nmon,\
 mosh,\
 rust,\
+cloc,\
 tree,\
 cmake,\
 aria2,\
 crash,\
 bspwm,\
+ccache,\
 ranger,\
 strace,\
 xinetd,\
@@ -492,5 +495,12 @@ git clone https://github.com/ZetZhang/vim-congiration-installer.git cd
 # $ ifconfig
 # must be config mpd
 
+# rofi config
+# mkdir -p ~/.config/rofi
+# rofi -dump-config > ~/.config/rofi/config.rasi
+
 # wallfle bitmap font and then
 # https://addy-dclxvi.github.io/post/bitmap-fonts/
+
+# gdb-dashboard
+wget -P ~ https://git.io/.gdbinit && pip install pygments
