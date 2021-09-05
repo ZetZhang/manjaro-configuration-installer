@@ -140,43 +140,19 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         alias pc='proxychains4'" >> ~/.zshrc
         echo -E "# asynctask
         alias task='~/.vim/plugged/asynctasks.vim/bin/asynctask -f'" >> ~/.zshrc
+        echo -E "# asynctask & tmux & vim
+        alias tabedit='vim'" >> ~/.zshrc
+        echo -E "# polybar
+        # alias polybar='/home/ichheit/ich/execute/polybar/polybar_launch.sh'
+        alias polybar=~/.config/polybar/launch.sh --forest" >> ~/.zshrc
+        echo -E "#mpd
+        alias mpd='mpd ~/.mpdconfig'
+        " >> ~/.zshrc
         echo -E "# incr
         # source ~/.oh-my-zsh/plugins/incr/incr*.zsh" >> ~/.zshrc
         echo -E "# zinit
         if [[ -f ~/.zinit/bin/zinit.zsh  ]] {
             source ~/.zinit/bin/zinit.zsh
-
-            # autu-ls 
-            zplugin ice wait'0' lucid
-            zplugin load desyncr/auto-ls
-            AUTO_LS_COMMANDS=(custom_function git-status)
-            auto-ls-custom_function () { ls --color }
-
-            # auto-notify
-            zinit light 'MichaelAquilina/zsh-auto-notify'
-            # Set threshold to 20seconds
-            export AUTO_NOTIFY_THRESHOLD=5
-            export AUTO_NOTIFY_TITLE='Hey! %command has just finished'
-            export AUTO_NOTIFY_BODY='It completed in %elapsed seconds with Ecode %exit_code'
-            # Set notification expiry to 10 seconds
-            export AUTO_NOTIFY_EXPIRE_TIME=5000
-            # redefine what is ignored by auto-notify
-            export AUTO_NOTIFY_IGNORE=('docker' 'sleep' '/usr/bin/vim' '/usr/bin/nvim' 'vim' 'nvim' 'kate' 'nano' 'code')
-            # export AUTO_NOTIFY_WHITELIST=('apt-get' 'yay' 'pacman' 'curl' 'you-get')
-
-            # zsh_autosuggestions
-            # zinit ice lucid wait='0' atload='_zsh_autosuggest_start'
-            zinit light zsh-users/zsh-autosuggestions
-
-            # zsh-syntax-highlighting
-            zinit light zsh-users/zsh-syntax-highlighting
-
-            # git-open
-            zinit load paulirish/git-open
-
-            # incr
-            # There are conflicts (themes & completed)
-            zinit snippet https://github.com/makeitjoe/incr.zsh/blob/master/incr.plugin.zsh
 
             # OMZ lib
             zinit snippet OMZ::lib/clipboard.zsh
@@ -196,7 +172,7 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
             zinit snippet OMZ::plugins/gitignore
             zinit snippet OMZ::plugins/cp
             zinit snippet OMZ::plugins/zsh_reload
-            # zinit snippet https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/per-directory-history/per-directory-history.zsh
+            zinit snippet https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/per-directory-history/per-directory-history.zsh
             bindkey '^P' history-substring-search-up
             bindkey '^N' history-substring-search-down
             zinit snippet OMZ::plugins/colored-man-pages
@@ -207,6 +183,91 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
             # zinit snippet OMZ::plugins/themes
             # zinit snippet OMZ::plugins/vi-mode
             # zinit snippet OMZ::plugins/command-not-found
+
+            # autu-ls 
+            zplugin ice wait'0' lucid
+            zplugin load desyncr/auto-ls
+            AUTO_LS_COMMANDS=(custom_function git-status)
+            auto-ls-custom_function () { ls --color }
+
+            # auto-notify
+            zinit load 'MichaelAquilina/zsh-auto-notify'
+            # Set threshold to 20seconds
+            export AUTO_NOTIFY_THRESHOLD=1
+            export AUTO_NOTIFY_TITLE='Hey! %command has just finished'
+            export AUTO_NOTIFY_BODY='It completed in %elapsed seconds with Ecode %exit_code'
+            # Set notification expiry to 10 seconds
+            export AUTO_NOTIFY_EXPIRE_TIME=3000
+            # redefine what is ignored by auto-notify
+            # export AUTO_NOTIFY_IGNORE=('docker' 'sleep' '/usr/bin/vim' '/usr/bin/nvim' 'vim' 'nvim' 'kate' 'nano' 'code')
+            export AUTO_NOTIFY_WHITELIST=('apt-get' 'sleep' 'yay' 'pacman' 'curl' 'you-get' 'sh' 'shell')
+
+            # zsh-command-time
+            zinit load 'popstas/zsh-command-time'
+            # If command execution time above min. time, plugins will not output time.
+            ZSH_COMMAND_TIME_MIN_SECONDS=3
+            # Message to display (set to "" for disable).
+            ZSH_COMMAND_TIME_MSG="Exec T> %s sec"
+            # Message color.
+            ZSH_COMMAND_TIME_COLOR="cyan"
+            # Exclude some commands
+            ZSH_COMMAND_TIME_EXCLUDE=(docker vim kate nvim nano code)
+            zsh_command_time() {
+                if [ -n "$ZSH_COMMAND_TIME" ]; then
+                    hours=$(($ZSH_COMMAND_TIME/3600))
+                    min=$(($ZSH_COMMAND_TIME/60))
+                    sec=$(($ZSH_COMMAND_TIME%60))
+                    if [ "$ZSH_COMMAND_TIME" -le 60 ]; then
+                        timer_show="$fg[green]$ZSH_COMMAND_TIME s."
+                    elif [ "$ZSH_COMMAND_TIME" -gt 60 ] && [ "$ZSH_COMMAND_TIME" -le 180 ]; then
+                        timer_show="$fg[yellow]$min min. $sec s."
+                    else
+                        if [ "$hours" -gt 0 ]; then
+                            min=$(($min%60))
+                            timer_show="$fg[red]$hours h. $min min. $sec s."
+                        else
+                            timer_show="$fg[red]$min min. $sec s."
+                        fi
+                    fi
+                    printf "${ZSH_COMMAND_TIME_MSG}\n" "$timer_show"
+                fi
+            }
+
+            # zsh_autosuggestions
+            # zinit ice lucid wait='0' atload='_zsh_autosuggest_start'
+            zinit light zsh-users/zsh-autosuggestions
+
+            # zsh-syntax-highlighting
+            zinit light zsh-users/zsh-syntax-highlighting
+
+            # git-open
+            zinit load paulirish/git-open
+
+            # incr
+            # There are conflicts (themes & completed)
+            # zinit snippet https://github.com/makeitjoe/incr.zsh/blob/master/incr.plugin.zsh
+
+            # 256color
+            zinit load 'chrissicool/zsh-256color'
+
+            # bd
+            zinit load 'Tarrasch/zsh-bd'
+
+            # command-not-found
+            zinit load 'Tarrasch/zsh-command-not-found'
+
+            # fast-syntax-highlighting
+            zinit light 'zdharma/fast-syntax-highlighting'
+            zinit wait lucid for \
+                atinit'ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay' \
+                zdharma/fast-syntax-highlighting \
+                blockf \
+                zsh-users/zsh-completions \
+                atload'!_zsh_autosuggest_start' \
+                zsh-users/zsh-autosuggestions
+
+            # nohup(ctrl-h)
+            zinit light 'micrenda/zsh-nohup'
         }" >> ~/.zshrc
 
         source ~/.zshrc
@@ -250,6 +311,7 @@ bar,\
 tig,\
 gdb,\
 mtr,\
+mpd,\
 zstd,\
 perf,\
 nmon,\
@@ -259,11 +321,13 @@ tree,\
 cmake,\
 aria2,\
 crash,\
+bspwm,\
 ranger,\
 strace,\
 xinetd,\
 zeromq,\
 docker,\
+polybar,\
 todotxt,\
 ripgrep,\
 sysstat,\
@@ -274,6 +338,7 @@ cppcheck,\
 net-tools,\
 systemtap,\
 traceroute,\
+xbacklight,\
 cppman-git,\
 gnu-netcat,\
 ansiweather,\
@@ -417,3 +482,15 @@ git clone https://github.com/ZetZhang/vim-congiration-installer.git cd
 # dwarffortress,\
 # dwarffortress-tile,\
 # cataclysm-dda}
+
+# polybar config
+# git clone --depth=1 https://github.com/adi1090x/polybar-themes.git
+#  find the file: ~/.config/polybar/launch.sh
+# check battery module
+# $ sudo vim /sys/class/power_supply
+# check network module (en,wl)
+# $ ifconfig
+# must be config mpd
+
+# wallfle bitmap font and then
+# https://addy-dclxvi.github.io/post/bitmap-fonts/
