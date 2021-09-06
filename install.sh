@@ -150,6 +150,11 @@ if [ -f ~/.zshrc -a -f ~/.hci/.c3 ]; then
         " >> ~/.zshrc
         echo -E "# incr
         # source ~/.oh-my-zsh/plugins/incr/incr*.zsh" >> ~/.zshrc
+        # echo -E "#
+        # # ruby
+        # PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
+        # export GEM_HOME=$HOME/.gem
+        # " >> ~/.zshrc
         echo -E "# zinit
         if [[ -f ~/.zinit/bin/zinit.zsh  ]] {
             source ~/.zinit/bin/zinit.zsh
@@ -312,6 +317,7 @@ tig,\
 gdb,\
 mtr,\
 mpd,\
+ncdu,\
 rofi,\
 zstd,\
 perf,\
@@ -324,12 +330,14 @@ cmake,\
 aria2,\
 crash,\
 bspwm,\
+dstat,\
 ccache,\
 ranger,\
 strace,\
 xinetd,\
 zeromq,\
 docker,\
+glances,\
 polybar,\
 todotxt,\
 ripgrep,\
