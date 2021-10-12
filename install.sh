@@ -302,6 +302,22 @@ cp ./fonts.conf ~/.config/fontconfig/
 [ $? -eq 0 ] && rm -rf ~/.hci.c7
 fi
 
+# special
+$ma {\
+nethogs,\
+xournalpp,\
+atool,\
+elinks,\
+mediainfo,\
+libcaca,\
+catdoc,\
+docx2txt,\
+conky,\
+graphviz}
+
+$ya {\
+nbfc}
+
 # simple
 $ma {\
 jdk8-openjdk,\
