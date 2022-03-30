@@ -315,7 +315,39 @@ docx2txt,\
 conky,\
 graphviz}
 
+# special 2
+$ma {\
+exa,\
+ripgrep,\
+duf,\
+dust,\
+broot,\
+fd,\
+mcfly,\
+tldr,\
+bottom,\
+gtop,\
+hyperfine,\
+gping,\
+procs,\
+httpie,\
+xh,\
+dog,\
+obs-studio,\
+pv,\
+bpftrace,\
+rustup}
+
 $ya {\
+ueberzug,\
+xmake,\
+cajviewer,\
+yuview,\
+audacity,\
+todesk,\
+obsidian,\
+logseq-desktop,\
+picgo-appimage,\
 nbfc}
 
 # simple
